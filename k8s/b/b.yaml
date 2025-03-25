@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: b-micro-service
+spec:
+  selector:
+    app: b-micro
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8081
+  type: LoadBalancer
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: b-micro-deployment
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 50%
+  selector:
+    matchLabels:
+      app: b-micro
+  template:
+    metadata:
+      labels:
+        app: b-micro
+    spec:
+      containers:
+        - name: b-micro-container
+          image: <docker_hub>/b-micro
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8081

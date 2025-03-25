@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  a-micro:
+    build:
+      context: ./a-micro
+      dockerfile: ./Dockerfile
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      - PORT=8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      - b-micro
+
+  b-micro:
+    build:
+      context: ./b-micro
+      dockerfile: ./Dockerfile
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      - PORT=8081
+    ports:
+      - "8081:8081"
